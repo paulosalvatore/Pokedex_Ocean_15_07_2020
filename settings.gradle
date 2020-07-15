@@ -1,0 +1,2 @@
+include ':app'
+rootProject.name = "Pokedex_Ocean_15_07_2020"
