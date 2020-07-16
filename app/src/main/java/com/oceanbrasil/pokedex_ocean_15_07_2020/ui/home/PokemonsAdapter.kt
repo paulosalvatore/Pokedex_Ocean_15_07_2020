@@ -4,22 +4,18 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.google.android.material.snackbar.Snackbar
 import com.oceanbrasil.pokedex_ocean_15_07_2020.R
 import com.oceanbrasil.pokedex_ocean_15_07_2020.api.PokemonApiRepository
 import com.oceanbrasil.pokedex_ocean_15_07_2020.model.PokemonInfoResult
 import com.oceanbrasil.pokedex_ocean_15_07_2020.model.PokemonResult
-import com.oceanbrasil.pokedex_ocean_15_07_2020.model.PokemonsResult
 import kotlinx.android.synthetic.main.pokemon_item.view.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class PokemonsAdapter(private val items: List<PokemonResult>) :
+class PokemonsAdapter(val items: MutableList<PokemonResult>) :
     RecyclerView.Adapter<PokemonsAdapter.ViewHolder>() {
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

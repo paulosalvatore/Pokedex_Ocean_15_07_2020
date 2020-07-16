@@ -5,10 +5,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,7 +14,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.oceanbrasil.pokedex_ocean_15_07_2020.R
 import com.oceanbrasil.pokedex_ocean_15_07_2020.api.PokemonApiRepository
 import com.oceanbrasil.pokedex_ocean_15_07_2020.model.PokemonsResult
-import kotlinx.android.synthetic.main.fragment_home.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -37,14 +34,19 @@ class HomeFragment : Fragment() {
 
         val repository = PokemonApiRepository()
 
-        val call = repository.listarPokemons()
+        val recyclerView: RecyclerView = root.findViewById(R.id.rvPokemons)
+        recyclerView.layoutManager = LinearLayoutManager(context)
 
-        call.enqueue(object : Callback<PokemonsResult> {
+        val pokemonsAdapter = PokemonsAdapter(mutableListOf())
+        recyclerView.adapter = pokemonsAdapter
+
+        val callback = object : Callback<PokemonsResult> {
             override fun onFailure(call: Call<PokemonsResult>, t: Throwable) {
                 container?.rootView?.let {
                     Snackbar.make(root, "Erro ao carregar os pokémons.", Snackbar.LENGTH_INDEFINITE)
                         .setAction("Tentar novamente", View.OnClickListener {
-                            Toast.makeText(context, "Carregar API novamente.", Toast.LENGTH_LONG).show()
+                            Toast.makeText(context, "Carregar API novamente.", Toast.LENGTH_LONG)
+                                .show()
                         }).show()
                 }
 
@@ -59,11 +61,18 @@ class HomeFragment : Fragment() {
 
                 Log.d("POKEMONS_API", listaPokemons.count().toString())
 
-                val recyclerView: RecyclerView = root.findViewById(R.id.rvPokemons)
-                recyclerView.layoutManager = LinearLayoutManager(context)
-                recyclerView.adapter = PokemonsAdapter(listaPokemons)
+                pokemonsAdapter.items.addAll(listaPokemons)
+                pokemonsAdapter.notifyDataSetChanged()
             }
-        })
+        }
+
+        val call = repository.listarPokemons()
+        val call2 = repository.listarPokemons(20 * 1, 20)
+        val call3 = repository.listarPokemons(20 * 2, 20)
+
+        call.enqueue(callback)
+        call2.enqueue(callback)
+        call3.enqueue(callback)
 
 //        val textView: TextView = root.findViewById(R.id.text_home)
 //
